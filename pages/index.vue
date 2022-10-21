@@ -8,6 +8,7 @@
         :key="list.key"
         :list="list"
         :tasks="currentTasks(list)"
+        @update:task-list="updateTaskList"
       />
     </ul>
   </div>
@@ -50,6 +51,17 @@ export default {
   computed: {
     currentTasks: (data) => (list) => {
       return data.tasks.filter((task) => task.status === list.id)
+    },
+  },
+  methods: {
+    updateTaskList(event, list) {
+      const itemID = event.dataTransfer.getData('itemID')
+      const item = this.tasks.find((task) => task.id === itemID * 1)
+      this.changeTaskStatus(item.id, list)
+    },
+    changeTaskStatus(id, status) {
+      const task = this.tasks.find((task) => task.id === id)
+      task.status = status
     },
   },
 }
