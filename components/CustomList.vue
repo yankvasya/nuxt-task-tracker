@@ -1,5 +1,10 @@
 <template>
-  <li class="list">
+  <li
+    class="list"
+    @drop="onDrop($event, list.id)"
+    @dragover.prevent
+    @dragenter.prevent
+  >
     <h2 class="list__title">{{ list.name }}</h2>
 
     <ul class="list__tasks tasks">
@@ -8,6 +13,7 @@
         :key="task.id"
         :item="task"
         class="tasks__task"
+        @update:drag="startDrag"
       />
     </ul>
   </li>
@@ -24,6 +30,17 @@ export default {
     tasks: {
       default: () => [],
       type: Array,
+    },
+  },
+  emits: ['update:task-list'],
+  methods: {
+    startDrag(event, item) {
+      event.dataTransfer.dropEffect = 'move'
+      event.dataTransfer.effectAllowed = 'move'
+      event.dataTransfer.setData('itemID', item.id)
+    },
+    onDrop(event, list) {
+      this.$emit('update:task-list', event, list)
     },
   },
 }
